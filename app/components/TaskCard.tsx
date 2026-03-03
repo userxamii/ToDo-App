@@ -1,5 +1,6 @@
+import { BlurView } from 'expo-blur';
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Task } from "../app";
 
 interface TaskCardProps {
@@ -14,26 +15,31 @@ const TaskCard: React.FC<TaskCardProps> = ({
   onRemove,
 }) => {
   return (
-    <View style={styles.card}>
-      <TouchableOpacity onPress={onToggle} style={styles.checkbox}>
-        <Text style={{ fontSize: 18 }}>
-          {task.completed ? "✔" : "☐"}
-        </Text>
-      </TouchableOpacity>
+   <BlurView
+  intensity={45}
+  tint="light"
+  style={[
+    styles.card,
+    task.completed && styles.completedCard
+  ]}
+>
+  <TouchableOpacity onPress={onToggle} style={styles.checkbox}>
+    {task.completed && <Text style={styles.check}>✓</Text>}
+  </TouchableOpacity>
 
-      <Text
-        style={[
-          styles.text,
-          task.completed && styles.completed,
-        ]}
-      >
-        {task.text}
-      </Text>
+  <Text
+    style={[
+      styles.text,
+      task.completed && styles.completedText,
+    ]}
+  >
+    {task.text}
+  </Text>
 
-      <TouchableOpacity onPress={onRemove} style={styles.delete}>
-        <Text style={{ fontSize: 18, color: "red" }}>🗑</Text>
-      </TouchableOpacity>
-    </View>
+  <TouchableOpacity onPress={onRemove}>
+    <Text style={styles.delete}>🚮</Text>
+  </TouchableOpacity>
+</BlurView>
   );
 };
 
@@ -41,29 +47,42 @@ export default TaskCard;
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 12,
-    marginBottom: 10,
-    backgroundColor: "white",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 18,
+    marginBottom: 18,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    overflow: 'hidden',
+  },
+  completedCard: {
+    opacity: 0.5,
   },
   checkbox: {
-    marginRight: 10,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 2,
+    borderColor: '#A78BFA',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  check: {
+    color: '#A78BFA',
+    fontWeight: 'bold',
   },
   text: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 17,
+    color: 'white',
   },
-  completed: {
-    textDecorationLine: "line-through",
-    color: "gray",
+  completedText: {
+    textDecorationLine: 'line-through',
   },
   delete: {
-    marginLeft: 10,
+    fontSize: 18,
+    color: '#F87171',
   },
 });

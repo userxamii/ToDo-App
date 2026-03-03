@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Dimensions, FlatList, SafeAreaView, StyleSheet, Text } from 'react-native';
 import TaskCard from './components/TaskCard';
 import TaskForm from './components/TaskForm';
 
@@ -42,28 +43,47 @@ export default function App() {
     setTasks(tasks.filter((task) => task.id !== id));
     };
 
-    const styles = StyleSheet.create({ 
-    container: {
-        flex: 1,
-        paddingTop: 50,
-        paddingHorizontal: 20,
-        backgroundColor: '#f0f0f0'
-    },
-    scrollView: {
-        marginTop: 20
-    },
-    });
-    return (
-        <View style={styles.container}>
-            <TaskForm onAddTask={addTask} />
-                <ScrollView style={styles.scrollView}>
-                 {tasks.map((task) => (
-                    <TaskCard key={task.id} task={task}
-                    onToggle={() => toggleTask(task.id)}
-                    onRemove={() => removeTask(task.id)} >
-                    </TaskCard>
-                 ))}
-                </ScrollView>
-        </View>
-    );
+    const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    fontSize: 32,
+    fontWeight: '700',
+    textAlign: 'left',
+    marginTop: 50,
+    marginBottom: 20,
+    color: 'white',
+    letterSpacing: 1,
+  },
+});
+    const { width } = Dimensions.get('window');
+
+return (
+  <LinearGradient
+    colors={['#0F172A', '#6e03b6']}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 0, y: 1 }}
+    style={{ flex: 1 }}
+  >
+    <SafeAreaView style={{ flex: 1, paddingHorizontal: 20 }}>
+      <Text style={styles.header}>My Tasks</Text>
+
+      <TaskForm onAddTask={addTask} />
+
+      <FlatList
+        data={tasks}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ marginTop: 30, paddingBottom: 40 }}
+        renderItem={({ item }) => (
+          <TaskCard
+            task={item}
+            onToggle={() => toggleTask(item.id)}
+            onRemove={() => removeTask(item.id)}
+          />
+        )}
+      />
+    </SafeAreaView>
+  </LinearGradient>
+);
 }
